@@ -17,9 +17,9 @@ public interface IUserService {
 
     void updateUser(User user_update, Long id_user);
 
-    boolean checkInLogin(String login);
+    boolean isCheckInLogin(String login);
 
-    boolean chekInLoginAndPassword(LoginDto loginDto);
+    boolean isChekInLoginAndPassword(LoginDto loginDto);
 
     User getUserByLogin(String login);
 }

@@ -54,13 +54,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean checkInLogin(String login) {
+    public boolean isCheckInLogin(String login) {
 
         return this.userDAO.findByLogin(login) == null;
     }
 
     @Override
-    public boolean chekInLoginAndPassword(LoginDto loginDto) {
+    public boolean isChekInLoginAndPassword(LoginDto loginDto) {
 
         User user = this.userDAO.findByLoginAndPassword(loginDto.getLogin(), loginDto.getPassword());
         return user != null;

@@ -2,6 +2,7 @@ package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IProductDAO;
 import by.it_academy.food_control.model.Product;
+import by.it_academy.food_control.security.UserHolder;
 import by.it_academy.food_control.service.api.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,12 @@ public class ProductService implements IProductService {
 
 
     private final IProductDAO productDAO;
+    private final UserHolder userHolder;
 
     @Autowired
-    public ProductService(IProductDAO productDAO) {
+    public ProductService(IProductDAO productDAO, UserHolder userHolder) {
         this.productDAO = productDAO;
+        this.userHolder = userHolder;
     }
 
     @Override
@@ -28,6 +31,9 @@ public class ProductService implements IProductService {
 
     @Override
     public void saveProduct(Product new_product) {
+
+        new_product.setUser(userHolder.getUser());
+
         this.productDAO.save(new_product);
     }
 

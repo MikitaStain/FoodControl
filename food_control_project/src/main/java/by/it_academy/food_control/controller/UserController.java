@@ -33,7 +33,7 @@ public class UserController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ResponseEntity<?> save_new_user(@RequestBody @Valid User user) {
 
-        if (this.userService.checkInLogin(user.getLogin())) {
+        if (this.userService.isCheckInLogin(user.getLogin())) {
 
             this.userService.saveUser(user);
 
@@ -46,7 +46,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
 
-        if (this.userService.chekInLoginAndPassword(loginDto)) {
+        if (this.userService.isChekInLoginAndPassword(loginDto)) {
 
             String token = jwtToken.getJWTToken(loginDto.getLogin());
             UserDto userDto = new UserDto();

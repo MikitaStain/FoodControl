@@ -33,7 +33,6 @@ public class DishService implements IDishService {
         this.dishDAO.deleteById(id_dish);
     }
 
-    //TODO проверка на пустой лист
     @Override
     public List<Dish> getAllDish() {
 

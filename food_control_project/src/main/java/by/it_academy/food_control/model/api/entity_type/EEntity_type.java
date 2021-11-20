@@ -4,5 +4,8 @@ public enum EEntity_type {
 
     PRODUCT,
     DISH,
-    USER
+    USER,
+    WEIGHT_CONTROL,
+    EXERCISE,
+    PROFILE
 }
