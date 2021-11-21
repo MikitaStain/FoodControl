@@ -1,14 +1,16 @@
 package by.it_academy.food_control.controller;
 
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Exercise;
 import by.it_academy.food_control.service.api.IExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/profile/{id_profile}/food_diary/exercises")
@@ -25,9 +27,16 @@ public class ExerciseController {
 
     //Получение списка упражнений
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllExercises() {
+    public ResponseEntity<?> getAllExercises(@RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 
-        List<Exercise> allExercise = this.exerciseService.getAllExercise();
+        PagesDTO pagesDTO = new PagesDTO();
+        pagesDTO.setPageNumber(pageNumber);
+        pagesDTO.setPageSize(pageSize);
+
+
+        Page<Exercise> page = this.exerciseService.getAllExercise(pagesDTO);
+        List<Exercise> allExercise = page.getContent();
 
         if (allExercise.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -99,14 +108,13 @@ public class ExerciseController {
         }
         try {
 
-            this.exerciseService.getExerciseById(id_exercise);
+            this.exerciseService.deleteExerciseById(id_exercise);
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } catch (IllegalArgumentException e) {
 
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        this.exerciseService.deleteExerciseById(id_exercise);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

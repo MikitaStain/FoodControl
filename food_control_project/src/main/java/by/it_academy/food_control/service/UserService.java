@@ -2,9 +2,13 @@ package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IUserDAO;
 import by.it_academy.food_control.dto.LoginDto;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.User;
 import by.it_academy.food_control.service.api.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,7 +26,8 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserById(Long id_user) {
-        return userDAO.findById(id_user).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+        return userDAO.findById(id_user).orElseThrow(
+                () -> new IllegalArgumentException("Пользователь не найден"));
     }
 
     @Override
@@ -33,12 +38,18 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUserById(Long id_user) {
+
+        getUserById(id_user);//Для проверки на наличие
+
         this.userDAO.deleteById(id_user);
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userDAO.findAll();
+    public Page<User> getAllUsers(PagesDTO pagesDTO) {
+
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return userDAO.findAll(pageable);
     }
 
     @Override

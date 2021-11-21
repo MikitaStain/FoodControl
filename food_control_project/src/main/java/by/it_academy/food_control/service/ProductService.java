@@ -1,10 +1,14 @@
 package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IProductDAO;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Product;
 import by.it_academy.food_control.security.UserHolder;
 import by.it_academy.food_control.service.api.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,13 +30,16 @@ public class ProductService implements IProductService {
     @Override
     public Product getProductById(Long id_product) {
 
-        return productDAO.findById(id_product).orElseThrow(() -> new IllegalArgumentException("Продукт не найден"));
+        return productDAO.findById(id_product).orElseThrow(
+                () -> new IllegalArgumentException("Продукт не найден"));
     }
 
     @Override
     public void saveProduct(Product new_product) {
 
         new_product.setUser(userHolder.getUser());
+        new_product.setData_created(LocalDateTime.now());
+        new_product.setData_created(LocalDateTime.now());
 
         this.productDAO.save(new_product);
     }
@@ -40,13 +47,17 @@ public class ProductService implements IProductService {
     @Override
     public void deleteProductById(Long id_product) {
 
+        getProductById(id_product);
         this.productDAO.deleteById(id_product);
 
     }
 
     @Override
-    public List<Product> getAllProduct() {
-        return productDAO.findAll();
+    public Page<Product> getAllProduct(PagesDTO pagesDTO) {
+
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return productDAO.findAll(pageable);
     }
 
     @Override

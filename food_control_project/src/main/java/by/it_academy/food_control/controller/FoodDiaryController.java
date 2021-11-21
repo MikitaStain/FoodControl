@@ -1,9 +1,11 @@
 package by.it_academy.food_control.controller;
 
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.FoodDiary;
 import by.it_academy.food_control.service.api.IFoodDiaryService;
 import by.it_academy.food_control.service.api.IProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +30,17 @@ public class FoodDiaryController {
 
     //Получение списка приемов пищи
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllEating(@PathVariable("id_profile") Long id_profile) {
+    public ResponseEntity<?> getAllEating(@PathVariable("id_profile") Long id_profile,
+                                          @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+                                          @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 
-        List<FoodDiary> allEating = this.foodDiaryService.getAllFoodDiary();
+        PagesDTO pagesDTO = new PagesDTO();
+        pagesDTO.setPageNumber(pageNumber);
+        pagesDTO.setPageSize(pageSize);
+
+
+        Page<FoodDiary> page = this.foodDiaryService.getAllFoodDiary(pagesDTO);
+        final List<FoodDiary> allEating = page.getContent();
 
         if (allEating.isEmpty()) {
 
@@ -43,7 +53,14 @@ public class FoodDiaryController {
     //Получение списка приемов пищи за день
     @RequestMapping(value = "/byDay/{day}", method = RequestMethod.GET)
     public ResponseEntity<?> getEating(@RequestBody @PathVariable("id_profile") Long id_profile,
-                                       @RequestBody @PathVariable("day") String date) {
+                                       @RequestBody @PathVariable("day") String date,
+                                       @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+                                       @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+
+        PagesDTO pagesDTO = new PagesDTO();
+        pagesDTO.setPageNumber(pageNumber);
+        pagesDTO.setPageSize(pageSize);
+
 
         if (id_profile == null || date == null) {
 
@@ -52,7 +69,8 @@ public class FoodDiaryController {
         try {
 
             this.profileService.getProfileById(id_profile);
-            List<FoodDiary> foodDiaryForDay = foodDiaryService.getAllFoodDiary();//getFoodDiaryForDay(date);
+            Page<FoodDiary> page = foodDiaryService.getAllFoodDiary(pagesDTO);//getFoodDiaryForDay(date);
+            List<FoodDiary> foodDiaryForDay = page.getContent();
 
             if (foodDiaryForDay.isEmpty()) {
 

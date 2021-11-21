@@ -1,6 +1,8 @@
 package by.it_academy.food_control.service.api;
 
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Ingredient;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ public interface IIngredientService {
 
     void deleteIngredientById(Long id_ingredient);
 
-    List<Ingredient> getAllIngredient();
+    Page<Ingredient> getAllIngredient(PagesDTO pagesDTO);
 
     void updateIngredient(Ingredient ingredient_update, Long id);
 }

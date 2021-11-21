@@ -7,5 +7,6 @@ public enum EEntity_type {
     USER,
     WEIGHT_CONTROL,
     EXERCISE,
-    PROFILE
+    PROFILE,
+    FOOD_DIARY
 }

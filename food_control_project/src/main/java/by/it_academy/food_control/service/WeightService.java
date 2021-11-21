@@ -1,13 +1,16 @@
 package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IWeightControlDAO;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.WeightControl;
 import by.it_academy.food_control.service.api.IWeightControlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class WeightService implements IWeightControlService {
@@ -35,12 +38,16 @@ public class WeightService implements IWeightControlService {
     @Override
     public void deleteWeightControlById(Long id_weightControl) {
 
+        getWeightControlById(id_weightControl);
         this.weightControlDAO.deleteById(id_weightControl);
     }
 
     @Override
-    public List<WeightControl> getAllWeightControl() {
-        return weightControlDAO.findAll();
+    public Page<WeightControl> getAllWeightControl(PagesDTO pagesDTO) {
+
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return weightControlDAO.findAll(pageable);
     }
 
     @Override

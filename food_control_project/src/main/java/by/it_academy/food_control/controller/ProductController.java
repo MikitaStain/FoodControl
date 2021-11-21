@@ -1,9 +1,11 @@
 package by.it_academy.food_control.controller;
 
 import by.it_academy.food_control.dao.api.IProductDAO;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Product;
 import by.it_academy.food_control.service.api.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,6 @@ public class ProductController {
 
     private final IProductService productService;
 
-
     @Autowired
     public ProductController(IProductService productService, IProductDAO productDAO) {
 
@@ -26,7 +27,6 @@ public class ProductController {
     }
 
 
-    //TODO валидация
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getProduct(@PathVariable("id") Long product_id) {
 
@@ -66,22 +66,26 @@ public class ProductController {
         }
         try {
 
-            this.productService.getProductById(id_product);
+            this.productService.deleteProductById(id_product);
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } catch (IllegalArgumentException e) {
 
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        this.productService.deleteProductById(id_product);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //TODO пагинация
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<List<Product>> getAllProduct() {
+    public ResponseEntity<?> getAllProduct(@RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 
-        List<Product> products = this.productService.getAllProduct();
+        PagesDTO pagesDTO = new PagesDTO();
+        pagesDTO.setPageNumber(pageNumber);
+        pagesDTO.setPageSize(pageSize);
+
+        Page<Product> page = this.productService.getAllProduct(pagesDTO);
+        List<Product> products = page.getContent();
 
         if (products.isEmpty()) {
 

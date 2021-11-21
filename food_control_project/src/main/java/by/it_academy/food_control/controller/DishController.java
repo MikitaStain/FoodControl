@@ -1,8 +1,10 @@
 package by.it_academy.food_control.controller;
 
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Dish;
 import by.it_academy.food_control.service.api.IDishService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,22 +56,27 @@ public class DishController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
+            this.dishService.deleteDishById(id_dish);
 
-            Dish dish = dishService.getDishById(id_dish);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
         } catch (IllegalArgumentException e) {
 
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        this.dishService.deleteDishById(id_dish);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //TODO пагинация
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<List<Dish>> getAllDish() {
+    public ResponseEntity<?> getAllDish(@RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+                                        @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 
-        List<Dish> dishes = this.dishService.getAllDish();
+        PagesDTO pagesDTO = new PagesDTO();
+        pagesDTO.setPageNumber(pageNumber);
+        pagesDTO.setPageSize(pageSize);
+
+        Page<Dish> page = this.dishService.getAllDish(pagesDTO);
+        List<Dish> dishes = page.getContent();
 
         if (dishes.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

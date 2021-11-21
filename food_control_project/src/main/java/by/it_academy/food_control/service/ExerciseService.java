@@ -1,9 +1,13 @@
 package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IExerciseDAO;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Exercise;
 import by.it_academy.food_control.service.api.IExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,13 +39,16 @@ public class ExerciseService implements IExerciseService {
     @Override
     public void deleteExerciseById(Long id_exercise) {
 
+        getExerciseById(id_exercise);
         this.exerciseDAO.deleteById(id_exercise);
     }
 
     @Override
-    public List<Exercise> getAllExercise() {
+    public Page<Exercise> getAllExercise(PagesDTO pagesDTO) {
 
-        return exerciseDAO.findAll();
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return exerciseDAO.findAll(pageable);
     }
 
     @Override

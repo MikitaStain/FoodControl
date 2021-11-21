@@ -1,8 +1,10 @@
 package by.it_academy.food_control.controller;
 
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.WeightControl;
 import by.it_academy.food_control.service.api.IWeightControlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +27,15 @@ public class WeightControlController {
 
     //Получение списка взвешиваний
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllWeightControl() {
+    public ResponseEntity<?> getAllWeightControl(@RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+                                                 @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 
-        List<WeightControl> allWeightControl = this.weightControlService.getAllWeightControl();
+        PagesDTO pagesDTO = new PagesDTO();
+        pagesDTO.setPageNumber(pageNumber);
+        pagesDTO.setPageSize(pageSize);
+
+        Page<WeightControl> page = this.weightControlService.getAllWeightControl(pagesDTO);
+        List<WeightControl> allWeightControl = page.getContent();
 
         if (allWeightControl.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -99,13 +107,13 @@ public class WeightControlController {
         }
         try {
 
-            this.weightControlService.getWeightControlById(id_weight);
+            this.weightControlService.deleteWeightControlById(id_weight);
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } catch (IllegalArgumentException e) {
 
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        this.weightControlService.deleteWeightControlById(id_weight);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

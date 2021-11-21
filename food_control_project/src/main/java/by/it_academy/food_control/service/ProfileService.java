@@ -1,13 +1,16 @@
 package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IProfileDAO;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Profile;
 import by.it_academy.food_control.service.api.IProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class ProfileService implements IProfileService {
@@ -23,7 +26,8 @@ public class ProfileService implements IProfileService {
     @Override
     public Profile getProfileById(Long id_profile) {
 
-        return profileDAO.findById(id_profile).orElseThrow(()->new IllegalArgumentException("Профиль не найден"));
+        return profileDAO.findById(id_profile).orElseThrow(
+                () -> new IllegalArgumentException("Профиль не найден"));
     }
 
     @Override
@@ -35,13 +39,17 @@ public class ProfileService implements IProfileService {
     @Override
     public void deleteProfileById(Long id_profile) {
 
+        getProfileById(id_profile);
+
         this.profileDAO.deleteById(id_profile);
     }
 
     @Override
-    public List<Profile> getAllProfile() {
+    public Page<Profile> getAllProfile(PagesDTO pagesDTO) {
 
-        return profileDAO.findAll();
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return profileDAO.findAll(pageable);
     }
 
     @Override

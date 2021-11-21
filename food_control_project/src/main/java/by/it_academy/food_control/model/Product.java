@@ -55,17 +55,16 @@ public class Product implements Serializable {
     private User user;
 
     @Column
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "mm.HH.dd.MM.yyyy")
     private LocalDateTime data_created;
 
+    @Version
     @JsonFormat(shape = JsonFormat.Shape.NATURAL, pattern = "yyyyMMddHHmmss[SSS]")
     @Column
     private LocalDateTime data_update;
 
 
     public Product() {
-        this.data_created = LocalDateTime.now();
-        this.data_update = LocalDateTime.now();
     }
 
 

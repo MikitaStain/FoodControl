@@ -1,6 +1,8 @@
 package by.it_academy.food_control.service.api;
 
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.FoodDiary;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ public interface IFoodDiaryService {
 
     void deleteFoodDiaryById(Long id_foodDiary);
 
-    List<FoodDiary> getAllFoodDiary();
+    Page<FoodDiary> getAllFoodDiary(PagesDTO pagesDTO);
 
     void updateFoodDiary(FoodDiary foodDiary_update, Long id_foodDiary);
 

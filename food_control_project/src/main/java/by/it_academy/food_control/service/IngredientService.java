@@ -1,9 +1,13 @@
 package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IIngredientDAO;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Ingredient;
 import by.it_academy.food_control.service.api.IIngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,12 +37,16 @@ public class IngredientService implements IIngredientService {
     @Override
     public void deleteIngredientById(Long id_ingredient) {
 
+        getIngredientById(id_ingredient);
         this.ingredientDAO.deleteById(id_ingredient);
     }
 
     @Override
-    public List<Ingredient> getAllIngredient() {
-        return ingredientDAO.findAll();
+    public Page<Ingredient> getAllIngredient(PagesDTO pagesDTO) {
+
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return ingredientDAO.findAll(pageable);
     }
 
     @Override

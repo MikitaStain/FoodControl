@@ -1,9 +1,13 @@
 package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IAuditDAO;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.Audit;
 import by.it_academy.food_control.service.api.IAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,8 +44,11 @@ public class AuditService implements IAuditService {
     }
 
     @Override
-    public List<Audit> getAllAudit() {
-        return this.auditDAO.findAll();
+    public Page<Audit> getAllAudit(PagesDTO pagesDTO) {
+
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return this.auditDAO.findAll(pageable);
     }
 
     @Override

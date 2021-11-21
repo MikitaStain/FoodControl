@@ -1,9 +1,13 @@
 package by.it_academy.food_control.service;
 
 import by.it_academy.food_control.dao.api.IFoodDiaryDao;
+import by.it_academy.food_control.dto.PagesDTO;
 import by.it_academy.food_control.model.FoodDiary;
 import by.it_academy.food_control.service.api.IFoodDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,9 +42,11 @@ public class FoodDiaryService implements IFoodDiaryService {
     }
 
     @Override
-    public List<FoodDiary> getAllFoodDiary() {
+    public Page<FoodDiary> getAllFoodDiary(PagesDTO pagesDTO) {
 
-        return foodDiaryDao.findAll();
+        Pageable pageable = PageRequest.of(pagesDTO.getPageNumber(), pagesDTO.getPageSize());
+
+        return foodDiaryDao.findAll(pageable);
     }
 
     @Override
